@@ -56,6 +56,8 @@ import { shield } from "../components/icons";
 
 import "./index.scss";
 import { ExportToExcalidrawPlus } from "./components/ExportToExcalidrawPlus";
+import { handleSubmit } from "../mermaid";
+import { randomId } from "../random";
 
 const languageDetector = new LanguageDetector();
 languageDetector.init({
@@ -411,6 +413,20 @@ const ExcalidrawWrapper = () => {
     const serializedItems = JSON.stringify(items);
     localStorage.setItem(STORAGE_KEYS.LOCAL_STORAGE_LIBRARY, serializedItems);
   };
+
+  useEffect(() => {
+    setTimeout(() => {
+      handleSubmit((res: ExcalidrawElement[]) => {
+        const newGroupId = randomId();
+        excalidrawAPI?.updateScene({
+          elements: res.map((i) => ({
+            ...i,
+            groupIds: [newGroupId],
+          })),
+        });
+      });
+    }, 100);
+  }, [excalidrawAPI]);
 
   return (
     <>
